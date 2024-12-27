@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Link</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        function updateWhatsAppLink() {
+            const countryCode = document.querySelector('.iti__selected-dial-code').innerText.replace('+', '');
+            const phoneNumber = document.getElementById('country_code').value.replace(countryCode, '').trim();
+            const message = encodeURIComponent(document.getElementById('message').value);
+            const link = `https://api.whatsapp.com/send/?phone=${countryCode}${phoneNumber}&text=${message}`;
+            document.getElementById('btn_openchat').href = link;
+            document.getElementById('preview_link').innerText = link;
+            localStorage.setItem('whatsapp_message', document.getElementById('message').value);
+            localStorage.setItem('whatsapp_country_code', countryCode);
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const input = document.querySelector("#country_code");
+            const iti = window.intlTelInput(input, {
+                initialCountry: "sg",
+                separateDialCode: true,
+            });
+            input.addEventListener('countrychange', updateWhatsAppLink);
+            input.addEventListener('input', updateWhatsAppLink);
+            const savedMessage = localStorage.getItem('whatsapp_message');
+            if (savedMessage) {
+                document.getElementById('message').value = savedMessage;
+            }
+            const savedCountryCode = localStorage.getItem('whatsapp_country_code');
+            if (savedCountryCode) {
+                iti.setNumber(`+${savedCountryCode}`);
+            }
+            updateWhatsAppLink();
+        });
+    </script>
+    <style>
+        /* Hide the up/down arrows in number input */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-start justify-center h-screen pt-10" style="padding-left: 20px; padding-right: 20px;">
+    <div>
+    <div class="bg-white p-6 rounded-lg shadow-lg text-left space-y-6">
+        <h1 class="text-2xl font-bold mb-4">Send a WhatsApp Message</h1>
+        <p class="text-gray-400 text-sm mb-4">This is a tool to let you open a chat in WhatsApp without the hassle of adding them as a phone contact first.</p>
+        <div class="mb-4">
+            <input id="country_code" type="tel" class="border p-2 rounded w-full" oninput="updateWhatsAppLink()">
+        </div>
+        <div class="mb-4">
+            <input id="message" type="text" placeholder="Message" value="Hello" class="border p-2 rounded w-full" oninput="updateWhatsAppLink()">
+        </div>
+        <p class="text-gray-600 text-sm mb-4">Preview:<br><span id="preview_link" class="text-blue-500"></span></p>
+        <p><a id="btn_openchat" href="https://api.whatsapp.com/send/?phone=6582345678&text=Hello" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Open chat in WhatsApp
+        </a></p>
+    </div>
+        <div class="text-gray-400 text-xs mt-4 text-center">
+            <a href="https://github.com/tzjtan/whatsapp_uri_builder" class="hover:underline inline-flex items-center">
+            View on GitHub
+            <svg class="ml-2" height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true">
+                <path fill-rule="evenodd" fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
