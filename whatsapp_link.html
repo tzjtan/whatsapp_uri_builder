@@ -10,7 +10,7 @@
     <script>
         function updateWhatsAppLink() {
             const countryCode = document.querySelector('.iti__selected-dial-code').innerText.replace('+', '');
-            const phoneNumber = document.getElementById('country_code').value.replace(countryCode, '').trim();
+            const phoneNumber = document.getElementById('country_code').value.replace(new RegExp("^" + countryCode), "").trim();
             const message = encodeURIComponent(document.getElementById('message').value);
             const link = `https://api.whatsapp.com/send/?phone=${countryCode}${phoneNumber}&text=${message}`;
             document.getElementById('btn_openchat').href = link;
@@ -76,4 +76,5 @@
         </div>
     </div>
 </body>
+
 </html>
